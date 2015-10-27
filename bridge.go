@@ -15,6 +15,7 @@ type Bridge struct {
 	IpAddr   string
 	Username string
 	debug    bool
+	Id       string
 }
 
 // NewBridge instantiates a bridge object.  Use this method when you already

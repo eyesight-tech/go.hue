@@ -29,8 +29,8 @@ type BridgeLocator interface {
 }
 
 type localBridge struct {
-	Serial  string `json:"id"`
-	IpAddr  string `json:"internalipaddress"`
+	Serial string `json:"id"`
+	IpAddr string `json:"internalipaddress"`
 }
 
 func (self localBridge) CreateUser(deviceType string) (*Bridge, error) {
@@ -56,11 +56,11 @@ func (self localBridge) CreateUser(deviceType string) (*Bridge, error) {
 	username := value["success"]["username"]
 
 	// and create the new bridge object
-	return &Bridge{IpAddr: self.IpAddr, Username: username}, nil
+	return &Bridge{IpAddr: self.IpAddr, Username: username, Id: self.Serial}, nil
 }
 
 func (self localBridge) Attach(username string) *Bridge {
-	return &Bridge{IpAddr: self.IpAddr, Username: username}
+	return &Bridge{IpAddr: self.IpAddr, Username: username, Id: self.Serial}
 }
 
 // DiscoverBridges is a two-step approach trying to find your hue bridges.
@@ -78,10 +78,10 @@ func DiscoverBridges(findAllBridges bool) ([]BridgeLocator, error) {
 	if err == nil {
 		conn.SetDeadline(time.Now().Add(3 * time.Second))
 		b := "M-SEARCH * HTTP/1.1\r\n" +
-				"HOST: 239.255.255.250:1900\r\n" +
-				"MAN: \"ssdp:discover\"\r\n" +
-				"MX: 3\r\n" +
-				"ST: go.hue:idl\r\n"
+			"HOST: 239.255.255.250:1900\r\n" +
+			"MAN: \"ssdp:discover\"\r\n" +
+			"MX: 3\r\n" +
+			"ST: go.hue:idl\r\n"
 
 		_, err := conn.WriteToUDP([]byte(b), &net.UDPAddr{IP: net.IPv4(239, 255, 255, 250), Port: 1900})
 		if err == nil {
